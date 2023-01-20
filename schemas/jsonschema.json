@@ -1,0 +1,103 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": ["pipeline"]
+      },
+      "version": {
+        "type": "integer",
+        "enum": [2]
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "destination": {
+        "type": "string"
+      },
+      "active": {
+        "type": "boolean"
+      },
+      "state": {
+        "type": "string",
+        "enum": ["draft"]
+      },
+      "columns": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/column" }
+      },
+      "elements": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/element" }
+      }
+    },
+    "required":["type","version","columns","elements"],
+    "$defs": {
+        "column": {
+            "type":"object",
+            "properties":{
+                "type":{
+                    "type":"string",
+                    "enum": ["column"]
+                },
+                "name":{
+                    "type":"string"
+                },
+                "source_names":{
+                    "type":"object",
+                    "properties":{
+                        "snow_csv":{
+                            "type":"string"
+                        },
+                        "snow_sql":{
+                            "type":"string"
+                        }
+                    }
+                },
+                "drop":{
+                    "type":"boolean"
+                },
+                "dtype":{
+                    "type":"string"
+                },
+                "categories":{
+                    "type":"array",
+                    "items":{
+                        "type":"string"
+                    }
+                }
+            },
+            "required":["type"]
+        },
+        "element": {
+            "type":"object",
+            "properties": {
+                "type":{
+                    "type":"string",
+                    "enum":["element"]
+                },
+                "class":{
+                    "type":"string"
+                },
+                "name":{
+                    "type":"string"
+                },
+                "description":{
+                    "type":"string"
+                },
+                "args":{
+                    "type":"array"
+                },
+                "kwargs":{
+                    "type":"object"
+                }
+            },    
+            "required":["type","class"]
+        }
+    }
+  }

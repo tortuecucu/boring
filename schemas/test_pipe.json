@@ -1,0 +1,19 @@
+{
+    "type":"pipeline",
+    "version":2,
+    "name":"test pipeline",
+    "description":"sert à tester le schéma et mla factory pour pipelines",
+    "destination":"data/test",
+    "active":true,
+    "state":"draft",
+    "columns":[],
+    "elements":[
+        {
+            "type":"element",
+            "class":"truc",
+            "name":"testElement",
+            "args":[],
+            "kwargs":{}
+        }
+    ]
+}

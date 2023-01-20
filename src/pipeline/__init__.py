@@ -1,3 +1,4 @@
+from functools import cache
 from typing import Optional, Set, Dict, List
 from abc import ABC, abstractclassmethod
 from pandas import DataFrame
@@ -6,9 +7,9 @@ from pathlib import Path
 import weakref
 
 class Pipeline():
-    def __init__(self, schema:Schema, path:Path, elements:Set['IElement']) -> None:
+    def __init__(self, schema:Schema, destination:Path, elements:Set['IElement']) -> None:
         self._shema=schema
-        self._destination=path
+        self._destination=destination
         self._elements=elements
         self._temp:Path=None
 
@@ -43,7 +44,7 @@ class Pipeline():
 
 class IElement(ABC):
     _instances:Dict['Pipeline', List['IElement']]
-    def __init__(self, name:str, pipeline:'Pipeline', step:int, level:Optional[int]=1) -> None:
+    def __init__(self, name:str, pipeline:'Pipeline', step:int, level:Optional[int]=0, parent:Optional['IElement']=None) -> None:
         self._name=name
         self._step=step
         self._level=level
@@ -68,6 +69,19 @@ class IElement(ABC):
     @abstractclassmethod
     async def run(self, source:DataFrame)->DataFrame:
         pass
+    
+    @classmethod
+    def types(cls):
+        @cache
+        def walker():
+            return set(IElement.__subclasses__()).union(
+                [s for c in IElement.__subclasses__() for s in c.types()]
+            )
+        return walker()
+    
+    @classmethod
+    def element(cls, type:str, *args, **kwargs)->'IElement':
+        ... #TODO code IT
 
 class PipelineFactory():
     @staticmethod

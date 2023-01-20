@@ -1,12 +1,15 @@
 from src.pipeline import IElement, Pipeline
 from collections import UserList
-from typing import Optional, List, Iterator, Coroutine, Iterable
+from typing import Optional, List, Iterator, Coroutine, Iterable, Set
 from pandas import DataFrame
 from abc import ABC, abstractclassmethod
 import asyncio
 
-class Sequence(IElement, UserList):
-    def __init__(self, name: str, pipeline: 'Pipeline', step: int, elements:List[IElement], level: Optional[int] = 1) -> None:
+class IGroup(IElement):
+    pass
+
+class Sequence(IGroup, UserList):
+    def __init__(self, name: str, pipeline: 'Pipeline', step: int, elements:Set[IElement], level: Optional[int] = 0) -> None:
         IElement().__init__(name, pipeline, step, level)
         UserList().__init__(elements)
 
@@ -32,7 +35,7 @@ class IParalellGenerator(ABC):
     def __iter__(self):
         pass
 
-class Paralell(IElement):
+class Paralell(IGroup):
     def __init__(self, name: str, pipeline: 'Pipeline', step: int, generator:IParalellGenerator, level: Optional[int] = 1) -> None:
         super().__init__(name, pipeline, step, level)
         self.generator=generator
@@ -44,3 +47,12 @@ class Paralell(IElement):
     async def run(self, source:DataFrame)->DataFrame:
         await asyncio.gather(*(c.run(source) for c in iter(self.generator)))
         return await self._post_processing(source)
+    
+class Fork(IGroup):
+    def __init__(self, pipeline: 'Pipeline', step: int, branch:IGroup, level: Optional[int] = 0, parent: Optional['IElement'] = None, name: Optional[str]=None) -> None:
+        super().__init__(name, pipeline, step, level, parent)
+        self.branch=branch
+    
+    async def run(self, source:DataFrame)->DataFrame:
+        await self.branch.run(source=source.copy())
+        return source

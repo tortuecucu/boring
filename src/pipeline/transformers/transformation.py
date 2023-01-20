@@ -19,7 +19,7 @@ class ITransformation(IElement):
         ...
 
 class FileBackup(ITransformation):
-    def __init__(self, path:Path, transformer: ITransformer, step: int, level: Optional[int] = 1) -> None:
+    def __init__(self, path:Path, transformer: ITransformer, step: int, level: Optional[int] = 0) -> None:
         super().__init__(path.name, transformer, step, level)
         self._path=path
     
