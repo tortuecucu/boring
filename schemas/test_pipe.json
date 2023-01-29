@@ -10,8 +10,21 @@
     "elements":[
         {
             "type":"element",
-            "class":"truc",
+            "class":"FakeElement",
             "name":"testElement",
+            "args":[],
+            "kwargs":{}
+        },
+        {
+            "type":"element",
+            "class":"FakeElement",
+            "args":[],
+            "kwargs":{}
+        },
+        {
+            "type":"element",
+            "class":"FakeElement",
+            "name":"thirdElement",
             "args":[],
             "kwargs":{}
         }

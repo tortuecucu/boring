@@ -28,6 +28,10 @@ class Schema():
     def requirements(self)->Set[str]:
         ...
     
+    @property
+    def name(self)->str:
+        ...
+    
     @classmethod
     def schema(cls, name:str)->'Schema':
         try:
