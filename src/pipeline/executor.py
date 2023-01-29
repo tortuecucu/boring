@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Iterable
 from src.backup import backup, rollback
 from line_profiler import profile
+import uuid
 
 class BackupManager:
     """ensure destination files are backuped and rollbacked in case of failure
@@ -40,6 +41,7 @@ class Executor():
         Returns:
             DataFrame: _description_
         """
+        run_id=uuid.uuid4()
         with tempfile.TemporaryDirectory() as tmp, BackupManager(self._pipeline) as bm:
             return await Executor._run_sequence(seq=self._pipeline.elements ,source=source)
     

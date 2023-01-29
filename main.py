@@ -1,6 +1,6 @@
 from src.pipeline import Schema, PipelineFactory
 
-s = Schema.schema('test_pipe')
+s = Schema.schema('titanic')
 factory = PipelineFactory()
 p = factory.pipeline(s)
 ...

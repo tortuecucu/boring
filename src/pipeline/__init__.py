@@ -60,19 +60,20 @@ class Pipeline():
 
 
 class IElement(ABC):
-    _instances:Dict['Pipeline', List[weakref.ReferenceType]]={}
+    _instances:Set=set()
+    _counter:int=0
     def __init__(self, pipeline:'Pipeline', step:int, level:Optional[int]=0, parent:Optional['IElement']=None, name:Optional[str]=None, *args, **kwargs) -> None:
-        self._name=name
+        self._counter+=1
+        self._name=name if name else f"Element #{self._counter} <{self.__class__.__name__}>"
         self._step=step
         self._level=level
         self._pipeline=pipeline
-        if  pipeline in self._instances:
-            self._instances[pipeline].append(weakref.ref(self))
-        else:
-            self._instances[pipeline]=[weakref.ref(self)]
         self._args=args
         self._kwargs=kwargs
-
+        
+    def __del__(self)->None:
+        IElement._instances.remove(self)
+    
     @property
     def step(self)->int:
         return self._step
@@ -120,7 +121,7 @@ class IElement(ABC):
         }
         if kwargs:named_args.update(kwargs)
         
-        return get_class(type)(*args, **named_args) #type: ignore
+        return get_class(type).element(*args, **named_args) #type: ignore
 
 class PipelineFactory():
     @staticmethod
@@ -145,8 +146,6 @@ class PipelineFactory():
         [_element(e) for e in schema._data.get('elements')]
         return pipe
         
-
-
 class FakeElement(IElement):
     def __init__(self, pipeline: 'Pipeline', step: int, level: Optional[int] = 0, parent: Optional['IElement'] = None, name: Optional[str] = None) -> None:
         super().__init__(pipeline, step, level, parent, name)

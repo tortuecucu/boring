@@ -25,3 +25,18 @@ class CsvExtractor(IFileExtractor):
             *self._args,
             **self._kwargs
         ) #type: ignore
+    
+    @classmethod
+    def element(cls, type:str, pipeline:Pipeline, step:int, level:Optional[int]=0, parent:Optional['IElement']=None, name:Optional[str]=None, *args, **kwargs)->'CsvExtractor':
+        assert type=="CsvExtractor"
+        assert "path" in kwargs
+        return CsvExtractor(
+            path=kwargs['path'],
+            pipeline=pipeline,
+            step=step,
+            level=level,
+            parent=parent,
+            name=name,
+            args=args,
+            kwargs=kwargs
+        )

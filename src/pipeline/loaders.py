@@ -27,6 +27,21 @@ class CsvLoader(IFileLoader):
             **self._kwargs
         )
         return source
+    @classmethod
+    def element(cls, type:str, pipeline:Pipeline, step:int, level:Optional[int]=0, parent:Optional['IElement']=None, name:Optional[str]=None, *args, **kwargs)->'CsvLoader':
+        assert type=="CsvLoader"
+        assert "path" in kwargs
+        return CsvLoader(
+            path=kwargs['path'],
+            pipeline=pipeline,
+            step=step,
+            level=level,
+            parent=parent,
+            name=name,
+            args=args,
+            kwargs=kwargs
+        )
+
 
 class ParquetLoader(IFileLoader):
     async def run(self, source:pd.DataFrame)->pd.DataFrame:
